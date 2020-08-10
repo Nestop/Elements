@@ -1,50 +1,58 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class GUIManager : MonoBehaviour
+namespace GameGUI
 {
-    public static GUIManager instance = null;
-
-    [SerializeField] private GameObject menu = default;
-    [SerializeField] private GameObject game = default;
-    [SerializeField] private GameObject ResultPanel = default;
-
-
-    private void Start()
+    public class GUIManager : MonoBehaviour
     {
-        if (instance == null || instance.Equals(this))
+        public static GUIManager instance = null;
+
+        [SerializeField] private GameObject menu = default;
+        [SerializeField] private GameObject game = default;
+        [SerializeField] private GameObject ResultPanel = default;
+
+
+        private void Start()
         {
-            instance = this;
-            DontDestroyOnLoad(this);
+            if (instance == null || instance.Equals(this))
+            {
+                instance = this;
+                DontDestroyOnLoad(this);
+            }
+            else
+            {
+                Destroy(this);
+            }
+
+            Initialize();
         }
-        else
+
+        private void Initialize()
         {
-            Destroy(this);
+            menu.SetActive(true);
+            ResultPanel.SetActive(false);
+            game.SetActive(false);
         }
-    }
-    private void OnEnable()
-    {
 
-    }
-
-    public void LoadLevel()
-    {
-        menu.SetActive(false);
-        ResultPanel.SetActive(false);
-        game.SetActive(true);
-    }
-
-    public void Win(bool isWin)
-    {
-        ResultPanel.SetActive(true);
-        Text message = ResultPanel.transform.GetChild(0).GetComponent<Text>();
-        if (isWin)
+        public void LoadLevel()
         {
-            message.text = "Вы победили!";
+            menu.SetActive(false);
+            ResultPanel.SetActive(false);
+            game.SetActive(true);
         }
-        else
+
+        public void Win(bool isWin)
         {
-            message.text = "Попробуй ещё раз";
+            ResultPanel.SetActive(true);
+            Text message = ResultPanel.transform.Find("Message").GetComponent<Text>();
+            if (isWin)
+            {
+                message.text = "Вы победили!";
+            }
+            else
+            {
+                message.text = "Попробуй ещё раз";
+            }
         }
     }
 }
