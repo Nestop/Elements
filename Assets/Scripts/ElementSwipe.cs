@@ -1,27 +1,21 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+using CS = GameLogic.CoordinateSystem;
+
 namespace GameLogic
 {
     public class ElementSwipe : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
-        private int width, height, i, j;
-        private float marginHorizontal, itemScale, pixelPerUnit, unitsOnHorizontal;
+        private int i, j;
         private Vector2 beginDragPos;
         private Game game;
 
         private void Start()
         {
-            width = LevelManager.instance.Width;
-            height = LevelManager.instance.Height;
-            marginHorizontal = LevelManager.instance.MarginHorizontal;
-            unitsOnHorizontal = LevelManager.instance.UnitsOnHorizontal;
-
-            pixelPerUnit = Screen.width / unitsOnHorizontal;
-            itemScale = pixelPerUnit * (unitsOnHorizontal - marginHorizontal * 2f) / width;
             RectTransform swipeScreen = GetComponent<RectTransform>();
-            float offsetX = pixelPerUnit * marginHorizontal;
-            float offsetY = (Screen.height - itemScale * height) / 2f;
+            float offsetX = CS.PixelsPerUnit * CS.MarginHorizontal;
+            float offsetY = (Screen.height - CS.ElementPixelScale * CS.Height) / 2f;
             swipeScreen.offsetMin = new Vector2( offsetX, offsetY);
             swipeScreen.offsetMax = new Vector2(-offsetX,-offsetY);
 
@@ -38,16 +32,15 @@ namespace GameLogic
             beginDragPos = eventData.position;
             float x = beginDragPos.x;
             float y = Screen.height - beginDragPos.y;
-            x -= marginHorizontal * pixelPerUnit;
-            y -= (Screen.height - itemScale * height) / 2f;
-            i  = (int)(y / itemScale);
-            j  = (int)(x / itemScale);
+            x -= CS.MarginHorizontal * CS.PixelsPerUnit;
+            y -= (Screen.height - CS.ElementPixelScale * CS.Height) / 2f;
+            i  = (int)(y / CS.ElementPixelScale);
+            j  = (int)(x / CS.ElementPixelScale);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
             Vector2 direction = eventData.position - beginDragPos;
-            direction.Normalize();
             int i, j;
             float lengthX = Mathf.Abs(direction.x);
             float lengthY = Mathf.Abs(direction.y);
@@ -63,6 +56,5 @@ namespace GameLogic
             }
             game.Swipe(this.i, this.j, i, j);
         }
-
     }
 }

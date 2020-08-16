@@ -819,7 +819,8 @@ MonoBehaviour:
   Width: 6
   Height: 6
   Background: {fileID: 21300000, guid: 5f78c5afaae9d6c42bcf404e236fa678, type: 3}
-  GameEffect: {fileID: 0}
+  GameEffect: {fileID: 3148967641082060072, guid: 50d096cd312b9834da3861cfebe0bc78,
+    type: 3}
   ElementsID: ffffffffffffffff01000000ffffffffffffffffffffffffffffffff0100000000000000ffffffffffffffffffffffffffffffff0100000001000000ffffffff01000000ffffffffffffffff00000000010000000000000000000000ffffffffffffffff01000000000000000100000001000000ffffffffffffffff01000000000000000100000001000000ffffffff
   MarginHorizontal: 0
   Steps: 3
@@ -1244,58 +1245,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1948032630
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1948032634}
-  - component: {fileID: 1948032631}
-  m_Layer: 0
-  m_Name: Particle System
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!68 &1948032631
-EdgeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1948032630}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_EdgeRadius: 0.14
-  m_Points:
-  - {x: -8.36661, y: -3.1298208}
-  - {x: 7.8875666, y: -3.1687546}
-  - {x: 7.9458055, y: 8.746384}
-  - {x: -8.15007, y: 8.780181}
-  - {x: -8.027346, y: -3.079773}
---- !u!4 &1948032634
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1948032630}
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 2.83, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!1 &2120106485
 GameObject:
   m_ObjectHideFlags: 0
@@ -1375,5 +1324,5 @@ Transform:
   m_LocalScale: {x: 0.884, y: 0.884, z: 0.884}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

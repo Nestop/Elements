@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+
 using GameGUI;
+using CS = GameLogic.CoordinateSystem;
 
 namespace GameLogic
 {
@@ -15,13 +17,6 @@ namespace GameLogic
         public int[] ElementsID;
         public float MarginHorizontal = 0.5f;
         public int Steps = 1;
-
-        private float unitsOnHorizontal;
-        private float unitsOnVertical;
-        private float elementScale;
-
-        public float UnitsOnHorizontal => unitsOnHorizontal;
-        public float ElementScale => elementScale;
         
 
         private void Start()
@@ -41,18 +36,9 @@ namespace GameLogic
 
         public void LoadLevel(int level)
         {
+            CS.SetCoordinateSystem(Width, Height, MarginHorizontal);
             GUIManager.instance.LoadLevel();
             GameManager.instance.Background.sprite = Background;
-            unitsOnHorizontal =
-                GameManager.instance.MainCamera.ScreenToWorldPoint(new Vector3(Screen.width, 0f, 0f)).x -
-                GameManager.instance.MainCamera.ScreenToWorldPoint(Vector3.zero).x;
-            unitsOnVertical = 
-                GameManager.instance.MainCamera.ScreenToWorldPoint(new Vector3(0f, Screen.height, 0f)).y -
-                GameManager.instance.MainCamera.ScreenToWorldPoint(Vector3.zero).y;
-            elementScale = (unitsOnHorizontal - MarginHorizontal * 2f) / Width;
-            float ground = (unitsOnVertical/2f)/5f;
-            float x, y;
-            Vector2 position;
             GameObject Element;
             Element[,] elements = new Element[Height, Width];
             for (int i = 0; i < Height; i++)
@@ -61,14 +47,11 @@ namespace GameLogic
                     int id = Width * i + j;
                     if (ElementsID[id] == -1) continue;
 
-                    x = MarginHorizontal - unitsOnHorizontal / 2f + elementScale / 2f + j * elementScale;
-                    y = (Height - 1) * elementScale / 2f - i * elementScale;
-                    position = new Vector2(x, y);
                     Element = new GameObject("Element", typeof(SpriteRenderer), typeof(Animator));
-                    Element.transform.localScale = Vector2.one * elementScale;
-                    Element.transform.localPosition = position;
+                    Element.transform.localScale = Vector2.one * CS.ElementScale;
+                    Element.transform.localPosition = CS.GetPosition(i,j);
                     SpriteRenderer sprRend = Element.GetComponent<SpriteRenderer>();
-                    sprRend.sortingOrder = -(Width * i - j);
+                    sprRend.sortingOrder = CS.GetSortingOrder(i, j);
                     Animator animator = Element.GetComponent<Animator>();
                     animator.runtimeAnimatorController = GameManager.instance.Elements[ElementsID[id]].Controller;
                     animator.SetFloat("Random",Random.Range(0f,1f));

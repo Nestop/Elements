@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using GameLogic;
+using CS = GameLogic.CoordinateSystem;
 
 namespace GameEffects
 {
@@ -24,20 +25,16 @@ namespace GameEffects
         private bool[] objLaunched;
         
 
-        private float leftBorder, rightBorder, topBorder, bottomBorder;
+        private float leftBorder, rightBorder;
         private float topSpawnBorder, bottomSpawnBorder;
 
         private void Start()
         {
-            Camera cam = GameManager.instance.MainCamera;
+            leftBorder   = CS.LeftCameraBorder - 1f;
+            rightBorder  = CS.RightCameraBorder + 1f;
 
-            leftBorder   = cam.ScreenToWorldPoint(Vector3.zero).x - 1f;
-            bottomBorder = cam.ScreenToWorldPoint(Vector3.zero).y;
-            rightBorder  = cam.ScreenToWorldPoint(new Vector3(Screen.width,0f,0f)).x + 1f;
-            topBorder    = cam.ScreenToWorldPoint(new Vector3(0f,Screen.height,0f)).y + 2f;
-
-            bottomSpawnBorder = cam.ScreenToWorldPoint(new Vector3(0f,Screen.height*0.4f)).y;
-            topSpawnBorder    = cam.ScreenToWorldPoint(new Vector3(0f,Screen.height*0.9f,0f)).y;
+            bottomSpawnBorder = CS.BottomCameraBorder*0.4f;
+            topSpawnBorder    = CS.TopCameraBorder*0.9f;
 
             objPool = new Transform[count];
             objPoolSprites = new SpriteRenderer[count];
@@ -85,12 +82,11 @@ namespace GameEffects
                 position.x += objDirection[i]*objSpeed[i]*Time.deltaTime;
                 position.y += (0.0015f*Mathf.Sin(Time.time*0.4f+objSinusOffset[i]))*objSpeed[i];
                 objPool[i].position = position; 
-                if(objLaunched[i] && (position.x<leftBorder || position.x>rightBorder))
+                if((objLaunched[i]) && (position.x<leftBorder || position.x>rightBorder))
                 {
                     objLaunched[i] = false;
                     LaunchBalloon(i);
                 }
-                //objPoolSprites[i].bounds.
             }
         }
     }

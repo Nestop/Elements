@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using GameGUI;
+using CS = GameLogic.CoordinateSystem;
 
 namespace GameLogic
 {
@@ -15,7 +16,6 @@ namespace GameLogic
         private float marginHorizontal, elementScale, unitsOnHorizontal;
         private bool needDestroy = false;
         private bool blockControl = false;
-        private bool needRefresh = false;
         private bool isPlayerMove = false;
         private bool twoElements;
         private GameObject gameEffect;
@@ -38,11 +38,11 @@ namespace GameLogic
             }
 
             this.elements = elements;
-            width = LevelManager.instance.Width;
-            height = LevelManager.instance.Height;
-            marginHorizontal = LevelManager.instance.MarginHorizontal;
-            elementScale = LevelManager.instance.ElementScale;
-            unitsOnHorizontal = LevelManager.instance.UnitsOnHorizontal;
+            width = CS.Width;
+            height = CS.Height;
+            marginHorizontal = CS.MarginHorizontal;
+            elementScale = CS.ElementScale;
+            unitsOnHorizontal = CS.UnitsOnHorizontal;
             steps4win = LevelManager.instance.Steps;
             blockControl = false;
             steps = 0;
@@ -54,10 +54,7 @@ namespace GameLogic
             if (elements[i1, j1] == null || i2 < 0 || i2 >= height || j2 < 0 || j2 >= width) return;
             blockControl = true;
             isPlayerMove = true;
-            if (( i2 + 1 < height && elements[i2 + 1, j2] == null ) || ( i1 - 1 > -1 && elements[i1 - 1, j1] != null ))
-            {
-                needRefresh = true;
-            }
+            
             if (elements[i2, j2] == null)
             {
                 if (j1 == j2) 
@@ -82,7 +79,7 @@ namespace GameLogic
             if (elements[i2, j2] == null)
             {
                 StartCoroutine(TranslateTo(i1, j1, i2, j2));
-                elements[i1, j1].spriteRenderer.sortingOrder = -(width * i2 - j2);
+                elements[i1, j1].spriteRenderer.sortingOrder = CS.GetSortingOrder(i2, j2);
                 elements[i2, j2] = elements[i1, j1];
                 elements[i1, j1] = null;
             }
@@ -93,10 +90,10 @@ namespace GameLogic
             if (elements[i2, j2] == null)
             {
                 Transform trans1 = elements[i1, j1].transform;
-                Vector3 startPos1 = GetPosition(i1, j1);
-                Vector3 startPos2 = GetPosition(i2, j2);
+                Vector3 startPos1 = CS.GetPosition(i1, j1);
+                Vector3 startPos2 = CS.GetPosition(i2, j2);
                 Vector3 delta = startPos2 - startPos1;
-                Vector3 offset = delta.normalized  * speed * Time.deltaTime;
+                Vector3 offset = delta.normalized * speed * Time.deltaTime;
 
                 float deltaX, deltaY;
                 deltaX = Mathf.Abs(trans1.localPosition.x - startPos2.x);
@@ -118,82 +115,54 @@ namespace GameLogic
             {
                 Transform trans1 = elements[i1, j1].transform;
                 Transform trans2 = elements[i2, j2].transform;
-                Vector3 origPos1 = GetPosition(i1, j1);
-                Vector3 origPos2 = GetPosition(i2, j2);
-                Vector3 delta = origPos2 - origPos1;
+                Vector3 startPos1 = CS.GetPosition(i1, j1);
+                Vector3 startPos2 = CS.GetPosition(i2, j2);
+                Vector3 delta = startPos2 - startPos1;
                 Vector3 offset = delta * speed * Time.deltaTime;
 
                 float deltaX, deltaY;
-                deltaX = Mathf.Abs(trans1.localPosition.x - origPos2.x);
-                deltaY = Mathf.Abs(trans1.localPosition.y - origPos2.y);
+                deltaX = Mathf.Abs(trans1.localPosition.x - startPos2.x);
+                deltaY = Mathf.Abs(trans1.localPosition.y - startPos2.y);
                 trans1.localPosition += offset;
                 trans2.localPosition -= offset;
                 delta = new Vector3(delta.x == 0 ? 0 : delta.x / Mathf.Abs(delta.x), delta.y == 0 ? 0 : delta.y / Mathf.Abs(delta.y), 0f);
-                while (deltaX > Mathf.Abs(trans1.localPosition.x - origPos2.x) || deltaY > Mathf.Abs(trans1.localPosition.y - origPos2.y))
+                while (deltaX > Mathf.Abs(trans1.localPosition.x - startPos2.x) || deltaY > Mathf.Abs(trans1.localPosition.y - startPos2.y))
                 {
                     yield return null;
-                    deltaX = Mathf.Abs(trans1.localPosition.x - origPos2.x);
-                    deltaY = Mathf.Abs(trans1.localPosition.y - origPos2.y);
+                    deltaX = Mathf.Abs(trans1.localPosition.x - startPos2.x);
+                    deltaY = Mathf.Abs(trans1.localPosition.y - startPos2.y);
 
                     trans1.localPosition += offset;
                     trans2.localPosition -= offset;
                 }
-                trans1.localPosition = origPos2;
-                trans2.localPosition = origPos1;
+                trans1.localPosition = startPos2;
+                trans2.localPosition = startPos1;
             }
             if (isPlayerMove)
             {
                 isPlayerMove = false;
-                if (twoElements)
-                {
-                    int sortingOrder = elements[i1, j1].spriteRenderer.sortingOrder;
-                    elements[i1, j1].spriteRenderer.sortingOrder = elements[i2, j2].spriteRenderer.sortingOrder;
-
-                    elements[i2, j2].spriteRenderer.sortingOrder = sortingOrder;
-                    Element element = elements[i1, j1];
-                    elements[i1, j1] = elements[i2, j2];
-                    elements[i2, j2] = element;
-                    CheckMatch(i1, j1);
-                    CheckMatch(i2, j2);
-                    if (needDestroy)
-                    {
-                        DestroyElements();
-                        Invoke("Refresh", destroyTime);
-                    }
-                    else
-                    if (needRefresh)
-                    {
-                        Refresh();
-                    }
-                    else
-                    {
-                        blockControl = false;
-                        Check4win();
-                    }
-                }
-                else
-                {
-                    elements[i1, j1].spriteRenderer.sortingOrder = -(width * i2 - j2);
-                    elements[i2, j2] = elements[i1, j1];
-                    elements[i1, j1] = null;
-                    CheckMatch(i2, j2);
-                    if (needDestroy)
-                    {
-                        DestroyElements();
-                        Invoke("Refresh", destroyTime);
-                    }
-                    else
-                    if (needRefresh)
-                    {
-                        Refresh();
-                    }
-                    else
-                    {
-                        blockControl = false;
-                        Check4win();
-                    }
-                }
+                SwapElements(i1, j1, i2, j2);
             }
+        }
+
+        private void SwapElements(int i1, int j1, int i2, int j2)
+        {
+            if (twoElements)
+            {
+                int sortingOrder = elements[i1, j1].spriteRenderer.sortingOrder;
+                elements[i1, j1].spriteRenderer.sortingOrder = elements[i2, j2].spriteRenderer.sortingOrder;
+                elements[i2, j2].spriteRenderer.sortingOrder = sortingOrder;
+                Element element = elements[i1, j1];
+                elements[i1, j1] = elements[i2, j2];
+                elements[i2, j2] = element;
+            }
+            else
+            {
+                elements[i1, j1].spriteRenderer.sortingOrder = CS.GetSortingOrder(i2, j2);
+                elements[i2, j2] = elements[i1, j1];
+                elements[i1, j1] = null;
+            }
+            Refresh();
         }
 
         private void CheckMatch(int i, int j)
@@ -312,7 +281,6 @@ namespace GameLogic
 
         private void Refresh()
         {
-            needRefresh = false;
             needDestroy = false;
             bool shift = false;
             int shifts = 0, maxShifts = 0;
@@ -347,13 +315,6 @@ namespace GameLogic
                 shifts = 0;
             }
             Invoke("CheckAllMatches", elementScale * maxShifts / speed);
-        }
-
-        private Vector3 GetPosition(int i, int j)
-        {
-            float x = marginHorizontal - unitsOnHorizontal / 2f + elementScale / 2f + j * elementScale;
-            float y = (height - 1) * elementScale / 2f - i * elementScale;
-            return new Vector3(x, y, 0f);
         }
 
         private void Check4win()

@@ -7,9 +7,9 @@ namespace GameLogic
         public static GameManager instance = null;
 
         [SerializeField] private Camera mainCamera = default;
-        public Camera MainCamera { get { return mainCamera; } }//public Camera MainCamera => mainCamera;
+        public Camera MainCamera => mainCamera;
         [SerializeField] private ElementSample[] elements = new ElementSample[0];
-        public ElementSample[] Elements { get { return elements; } }//public ElementData[] Elements => elements;
+        public ElementSample[] Elements => elements;
         public SpriteRenderer Background;
 
         private void Start()
