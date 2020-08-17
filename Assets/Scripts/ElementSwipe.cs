@@ -5,6 +5,7 @@ using CS = GameLogic.CoordinateSystem;
 
 namespace GameLogic
 {
+    [RequireComponent(typeof(BoxCollider2D))]
     public class ElementSwipe : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         private int i, j;
@@ -13,11 +14,10 @@ namespace GameLogic
 
         private void Start()
         {
-            RectTransform swipeScreen = GetComponent<RectTransform>();
-            float offsetX = CS.PixelsPerUnit * CS.MarginHorizontal;
-            float offsetY = (Screen.height - CS.ElementPixelScale * CS.Height) / 2f;
-            swipeScreen.offsetMin = new Vector2( offsetX, offsetY);
-            swipeScreen.offsetMax = new Vector2(-offsetX,-offsetY);
+            BoxCollider2D swipeScreen = GetComponent<BoxCollider2D>();
+            float scaleX = CS.ElementScale * CS.Width;
+            float scaleY = CS.ElementScale * CS.Height;
+            swipeScreen.size = new Vector2(scaleX, scaleY);
 
             game = LevelManager.instance.game;
         }
