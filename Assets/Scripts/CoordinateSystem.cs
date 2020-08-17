@@ -49,12 +49,16 @@ namespace GameLogic
             _unitsOnVertical = 
                 cam.ScreenToWorldPoint(new Vector3(0f, Screen.height, 0f)).y -
                 cam.ScreenToWorldPoint(Vector3.zero).y;
-            _elementScale = (_unitsOnHorizontal - _marginHorizontal * 2f) / _width;
+            _groundLevel = _unitsOnVertical*0.17f;
+
+            float elementScaleX = (_unitsOnHorizontal - _marginHorizontal * 2f) / _width;
+            float elementScaleY = (_unitsOnVertical-_groundLevel-1.5f) / _height;
+            _elementScale = elementScaleX < elementScaleY ? elementScaleX : elementScaleY;
+
             _pixelsPerUnit = Screen.width / _unitsOnHorizontal;
             _elementPixelScale = _pixelsPerUnit*_elementScale;
-            _groundLevel = _unitsOnVertical*0.17f;
             _startSpawnPoint = new Vector3();
-            _startSpawnPoint.x = _marginHorizontal - _unitsOnHorizontal / 2f + _elementScale / 2f;
+            _startSpawnPoint.x = _marginHorizontal - _elementScale*_width/2f + _elementScale / 2f;
             _startSpawnPoint.y = -_unitsOnVertical/2f+_groundLevel + (_height-1)*_elementScale +_elementScale/2f;
             
             _leftCameraBorder   = cam.ScreenToWorldPoint(Vector3.zero).x;
