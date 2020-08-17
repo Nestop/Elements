@@ -18,6 +18,7 @@ namespace GameLogic
             float scaleX = CS.ElementScale * CS.Width;
             float scaleY = CS.ElementScale * CS.Height;
             swipeScreen.size = new Vector2(scaleX, scaleY);
+            swipeScreen.offset = new Vector2(0f, CS.StartSpawnPoint.y - CS.ElementScale*(CS.Height-1)/2f);
 
             game = LevelManager.instance.game;
         }
@@ -33,13 +34,15 @@ namespace GameLogic
             float x = beginDragPos.x;
             float y = Screen.height - beginDragPos.y;
             x -= CS.MarginHorizontal * CS.PixelsPerUnit;
-            y -= (Screen.height - CS.ElementPixelScale * CS.Height) / 2f;
+            y -= (Screen.height - CS.GroundLevel*CS.PixelsPerUnit - CS.ElementPixelScale*CS.Height);
             i  = (int)(y / CS.ElementPixelScale);
             j  = (int)(x / CS.ElementPixelScale);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            if(this.i >= CS.Height || this.j >= CS.Width) return;
+
             Vector2 direction = eventData.position - beginDragPos;
             int i, j;
             float lengthX = Mathf.Abs(direction.x);

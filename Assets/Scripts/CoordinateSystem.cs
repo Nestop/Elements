@@ -12,6 +12,8 @@ namespace GameLogic
         static public float UnitsOnHorizontal => _unitsOnHorizontal;
         static public float UnitsOnVertical => _unitsOnVertical;
         static public float PixelsPerUnit => _pixelsPerUnit;
+        static public float GroundLevel => _groundLevel;
+        static public Vector3 StartSpawnPoint => _startSpawnPoint;
 
         static public float LeftCameraBorder => _leftCameraBorder;
         static public float BottomCameraBorder => _bottomCameraBorder;
@@ -27,6 +29,8 @@ namespace GameLogic
         static private float _unitsOnHorizontal;
         static private float _unitsOnVertical;
         static private float _pixelsPerUnit;
+        static private Vector3 _startSpawnPoint;
+        static private float _groundLevel;
 
         static private float _leftCameraBorder;
         static private float _bottomCameraBorder;
@@ -48,6 +52,10 @@ namespace GameLogic
             _elementScale = (_unitsOnHorizontal - _marginHorizontal * 2f) / _width;
             _pixelsPerUnit = Screen.width / _unitsOnHorizontal;
             _elementPixelScale = _pixelsPerUnit*_elementScale;
+            _groundLevel = _unitsOnVertical*0.17f;
+            _startSpawnPoint = new Vector3();
+            _startSpawnPoint.x = _marginHorizontal - _unitsOnHorizontal / 2f + _elementScale / 2f;
+            _startSpawnPoint.y = -_unitsOnVertical/2f+_groundLevel + (_height-1)*_elementScale +_elementScale/2f;
             
             _leftCameraBorder   = cam.ScreenToWorldPoint(Vector3.zero).x;
             _bottomCameraBorder = cam.ScreenToWorldPoint(Vector3.zero).y;
@@ -57,8 +65,8 @@ namespace GameLogic
 
         static public Vector3 GetPosition(int i, int j)
         {
-            float x = _marginHorizontal - _unitsOnHorizontal / 2f + _elementScale / 2f + j * _elementScale;
-            float y = (_height - 1) * _elementScale / 2f - i * _elementScale;
+            float x = _startSpawnPoint.x + j * _elementScale;
+            float y = _startSpawnPoint.y - i * _elementScale;
             return new Vector3(x, y, 0f);
         }
 
