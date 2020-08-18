@@ -11,6 +11,7 @@ namespace GameLogic
     public class Game : MonoBehaviour
     {
         private Element[,] elements;
+        private Element[,] elementsCopy;
 
         private int width, height, steps4win, steps = 0;
         private float marginHorizontal, elementScale, unitsOnHorizontal;
@@ -24,26 +25,38 @@ namespace GameLogic
 
         public void GetElements(Element[,] elements)
         {
-            if (this.elements != null)
-            {
-                foreach (var element in this.elements)
-                {
-                    if (element != null)
-                        Destroy(element.transform.gameObject);
-                }
-            }
-            if (LevelManager.instance.GameEffect!= null && gameEffect == null)
-            {
-                gameEffect = Instantiate(LevelManager.instance.GameEffect, Vector3.zero, Quaternion.identity);
-            }
+            gameEffect = Instantiate(LevelManager.instance.GameEffect, Vector3.zero, Quaternion.identity);
 
             this.elements = elements;
+            elementsCopy = elements.Clone() as Element[,];
             width = CS.Width;
             height = CS.Height;
             marginHorizontal = CS.MarginHorizontal;
             elementScale = CS.ElementScale;
             unitsOnHorizontal = CS.UnitsOnHorizontal;
             steps4win = LevelManager.instance.Steps;
+            blockControl = false;
+            steps = 0;
+        }
+
+        public void ReloadLevel()
+        {
+            elements = elementsCopy.Clone() as Element[,];
+            for (int i = 0; i < height; i++)
+                for (int j = 0; j < width; j++)
+                {
+                    if(elements[i,j] == null)
+                    {
+                        continue;
+                    }
+                    elements[i,j].Destroy = false;
+                    elements[i,j].transform.position = CS.GetPosition(i, j);
+                    elements[i,j].spriteRenderer.sortingOrder = CS.GetSortingOrder(i, j);
+                    if (elements[i,j].transform.gameObject.activeInHierarchy == false)
+                    {
+                        elements[i,j].transform.gameObject.SetActive(true);
+                    }
+                }
             blockControl = false;
             steps = 0;
         }
@@ -273,7 +286,7 @@ namespace GameLogic
                 {
                     if (elements[i, j] != null && elements[i, j].Destroy)
                     {
-                        Destroy(elements[i, j].transform.gameObject);
+                        elements[i, j].transform.gameObject.SetActive(false);
                         elements[i, j] = null;
                     }
                 }
