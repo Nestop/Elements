@@ -823,14 +823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   game: {fileID: 0}
-  Width: 6
-  Height: 6
-  Background: {fileID: 21300000, guid: 5f78c5afaae9d6c42bcf404e236fa678, type: 3}
-  GameEffect: {fileID: 3148967641082060072, guid: 50d096cd312b9834da3861cfebe0bc78,
-    type: 3}
-  ElementsID: ffffffffffffffff01000000ffffffffffffffffffffffffffffffff0100000000000000ffffffffffffffffffffffffffffffff0100000001000000ffffffff01000000ffffffffffffffff00000000010000000000000000000000ffffffffffffffff01000000000000000100000001000000ffffffffffffffff01000000000000000100000001000000ffffffff
-  MarginHorizontal: 0
-  Steps: 3
+  loadedLevelNum: 0
 --- !u!114 &824161094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1147,7 +1140,7 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0

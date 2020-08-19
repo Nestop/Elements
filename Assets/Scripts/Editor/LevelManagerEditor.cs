@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEditor;
 
 using GameLogic;
@@ -7,7 +9,8 @@ using GameLogic;
 public class EGLevel : Editor
 {
 
-    private LevelManager gameLevel;
+    private LevelManager levelManager;
+    Level currLvl;
     private GameManager gameManager;
 
     private int brushElementID = -1; 
@@ -16,18 +19,41 @@ public class EGLevel : Editor
 
     private void OnEnable()
     {
-        gameLevel = target as LevelManager;
+        levelManager = target as LevelManager;
         gameManager = GameManager.Get();
 
-        if (gameLevel.ElementsID == null)
+        if (levelManager.levels == null)
         {
-            gameLevel.ElementsID = new int[0];
+            levelManager.levels = new List<Level>();
         }
     }
 
     public override void OnInspectorGUI()
     {
-        ShowInputData();
+        GUILayout.BeginHorizontal();
+        GUILayout.Label(string.Format("Уровень {0} ",levelManager.CurrentLevelNum));
+        if (GUILayout.Button("<-",GUILayout.Width(30f)))
+        {
+            levelManager.CurrentLevelNum--;
+        }
+        levelManager.CurrentLevelNum = EditorGUILayout.IntField( levelManager.CurrentLevelNum,GUILayout.Width(30f));
+        if (GUILayout.Button("->",GUILayout.Width(30f)))
+        {
+            levelManager.CurrentLevelNum++;
+        }
+        GUILayout.EndHorizontal();
+        GUILayout.Space(10f);
+
+        if(levelManager.CurrentLevelNum > levelManager.levels.Count)
+        {
+            if (GUILayout.Button("Создать уровень"))
+            {
+                levelManager.levels.Add(new Level());
+                levelManager.levels[levelManager.CurrentLevelNum-1].ElementsID = new int[0];
+            }
+            return;  
+        }
+        ShowLevelData();
         if(ShowElementsPalette() == false) 
         {
             return;
@@ -36,14 +62,15 @@ public class EGLevel : Editor
         ShowLevel();       
     }
 
-    private void ShowInputData()
+    private void ShowLevelData()
     {
-        gameLevel.Width = EditorGUILayout.IntField("Ширина", gameLevel.Width);
-        gameLevel.Height = EditorGUILayout.IntField("Высота", gameLevel.Height);
-        gameLevel.MarginHorizontal = EditorGUILayout.FloatField("Горизонтальный отступ", gameLevel.MarginHorizontal);
-        gameLevel.Steps = EditorGUILayout.IntField("Ходов для победы", gameLevel.Steps);
-        gameLevel.GameEffect = (GameObject)EditorGUILayout.ObjectField("Эффекты", gameLevel.GameEffect, typeof(GameObject), false);
-        gameLevel.Background = (Sprite)EditorGUILayout.ObjectField("Фон", gameLevel.Background, typeof(Sprite), false);
+        currLvl = levelManager.levels[levelManager.CurrentLevelNum-1];
+        currLvl.Width = EditorGUILayout.IntField("Ширина", currLvl.Width);
+        currLvl.Height = EditorGUILayout.IntField("Высота", currLvl.Height);
+        currLvl.MarginHorizontal = EditorGUILayout.FloatField("Горизонтальный отступ", currLvl.MarginHorizontal);
+        currLvl.Steps = EditorGUILayout.IntField("Ходов для победы", currLvl.Steps);
+        currLvl.GameEffect = (GameObject)EditorGUILayout.ObjectField("Эффекты", currLvl.GameEffect, typeof(GameObject), false);
+        currLvl.Background = (Sprite)EditorGUILayout.ObjectField("Фон", currLvl.Background, typeof(Sprite), false);
     }
 
     private bool ShowElementsPalette()
@@ -75,13 +102,13 @@ public class EGLevel : Editor
 
     private void CheckLevelSize()
     {
-        int elementsCount = gameLevel.Height * gameLevel.Width;
-        if (gameLevel.ElementsID.GetLength(0) != elementsCount)
+        int elementsCount = currLvl.Height * currLvl.Width;
+        if (currLvl.ElementsID.GetLength(0) != elementsCount)
         {
-            gameLevel.ElementsID = new int[elementsCount];
-            for(int i = 0; i < gameLevel.ElementsID.Length; i++)
+            currLvl.ElementsID = new int[elementsCount];
+            for(int i = 0; i < currLvl.ElementsID.Length; i++)
             {
-                gameLevel.ElementsID[i] = -1;
+                currLvl.ElementsID[i] = -1;
             }
         }
     }
@@ -89,22 +116,22 @@ public class EGLevel : Editor
     private void ShowLevel()
     {
         GUILayout.Label("Уровень:");
-        for (int i = 0; i < gameLevel.Height; i++)
+        for (int i = 0; i < currLvl.Height; i++)
         {
             GUILayout.BeginHorizontal();
-            for (int j = i * gameLevel.Width; j < (i + 1) * gameLevel.Width; j++)
+            for (int j = i * currLvl.Width; j < (i + 1) * currLvl.Width; j++)
             {
-                if (gameLevel.ElementsID[j] == -1)
+                if (currLvl.ElementsID[j] == -1)
                 {
                     if (GUILayout.Button("", GUILayout.Width(BUTTON_SIZE), GUILayout.Height(BUTTON_SIZE)))
                     {
-                        gameLevel.ElementsID[j] = brushElementID; 
+                        currLvl.ElementsID[j] = brushElementID; 
                     }
                     continue;
                 }
-                if (GUILayout.Button(gameManager.Elements[gameLevel.ElementsID[j]].Icon, GUILayout.Width(BUTTON_SIZE), GUILayout.Height(BUTTON_SIZE)))
+                if (GUILayout.Button(gameManager.Elements[currLvl.ElementsID[j]].Icon, GUILayout.Width(BUTTON_SIZE), GUILayout.Height(BUTTON_SIZE)))
                 {
-                    gameLevel.ElementsID[j] = brushElementID;
+                    currLvl.ElementsID[j] = brushElementID;
                 }
             }
             GUILayout.EndHorizontal();

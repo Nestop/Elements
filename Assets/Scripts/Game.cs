@@ -25,8 +25,12 @@ namespace GameLogic
 
         public void GetElements(Element[,] elements)
         {
-            gameEffect = Instantiate(LevelManager.instance.GameEffect, Vector3.zero, Quaternion.identity);
-
+            LevelManager lvlManager = LevelManager.instance;
+            if (lvlManager.levels[lvlManager.loadedLevelNum].GameEffect != null)
+            {
+                gameEffect = Instantiate(lvlManager.levels[lvlManager.loadedLevelNum].GameEffect, Vector3.zero, Quaternion.identity);
+            }
+            
             this.elements = elements;
             elementsCopy = elements.Clone() as Element[,];
             width = CS.Width;
@@ -34,7 +38,7 @@ namespace GameLogic
             marginHorizontal = CS.MarginHorizontal;
             elementScale = CS.ElementScale;
             unitsOnHorizontal = CS.UnitsOnHorizontal;
-            steps4win = LevelManager.instance.Steps;
+            steps4win = lvlManager.levels[lvlManager.loadedLevelNum].Steps;
             blockControl = false;
             steps = 0;
         }

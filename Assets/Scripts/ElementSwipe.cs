@@ -33,7 +33,7 @@ namespace GameLogic
             beginDragPos = eventData.position;
             float x = beginDragPos.x;
             float y = Screen.height - beginDragPos.y;
-            x -= CS.MarginHorizontal * CS.PixelsPerUnit + (Screen.width - CS.ElementPixelScale*CS.Width)/2f;
+            x -= (Screen.width - CS.ElementPixelScale*CS.Width)/2f;
             y -= (Screen.height - CS.GroundLevel*CS.PixelsPerUnit - CS.ElementPixelScale*CS.Height);
             i  = (int)(y / CS.ElementPixelScale);
             j  = (int)(x / CS.ElementPixelScale);
