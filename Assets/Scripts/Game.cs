@@ -27,14 +27,6 @@ namespace GameLogic
         public void GetElements(Element[,] elements)
         {
             LevelManager lvlManager = LevelManager.instance;
-            if (elementsCopy != null)
-            {
-                foreach (var element in elementsCopy)
-                {
-                    if (element != null)
-                        Destroy(element.transform.gameObject);
-                }
-            }
             GameObject effect = lvlManager.levels[lvlManager.loadedLevelNum].GameEffect;
             if (effect != null && (gameEffect == null || gameEffectSource.Equals(effect) == false))
             {
