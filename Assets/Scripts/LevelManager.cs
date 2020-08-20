@@ -71,5 +71,12 @@ namespace GameLogic
                 }
             game.GetElements(elements);
         }
+
+        public void LoadNextLevel()
+        {
+            int levelNum = loadedLevelNum + 2;
+            levelNum = levelNum > levels.Count ? 1 : levelNum;
+            LoadLevel(levelNum);
+        }
     }
 }

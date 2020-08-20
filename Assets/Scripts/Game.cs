@@ -365,10 +365,7 @@ namespace GameLogic
             {
                 //blockControl = true;
                 //GUIManager.instance.Win(true);
-                LevelManager lvlManager = LevelManager.instance;
-                int levelNum = lvlManager.loadedLevelNum + 2;
-                levelNum = levelNum > lvlManager.levels.Count ? 1 : levelNum;
-                lvlManager.LoadLevel(levelNum);
+                LevelManager.instance.LoadNextLevel();
             }
             else
             if (steps >= steps4win)
