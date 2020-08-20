@@ -48,7 +48,9 @@ namespace GameLogic
             Level level = levels[loadedLevelNum];
             CS.SetCoordinateSystem(level.Width, level.Height, level.MarginHorizontal);
             GUIManager.instance.LoadLevel();
-            GameManager.instance.Background.sprite = level.Background;
+            GameManager gameManager = GameManager.instance;
+            gameManager.SwipeScreen.UpdateSize();
+            gameManager.Background.sprite = level.Background;
             GameObject Element;
             Element[,] elements = new Element[level.Height, level.Width];
             for (int i = 0; i < level.Height; i++)
@@ -63,7 +65,7 @@ namespace GameLogic
                     SpriteRenderer sprRend = Element.GetComponent<SpriteRenderer>();
                     sprRend.sortingOrder = CS.GetSortingOrder(i, j);
                     Animator animator = Element.GetComponent<Animator>();
-                    animator.runtimeAnimatorController = GameManager.instance.Elements[level.ElementsID[id]].Controller;
+                    animator.runtimeAnimatorController = gameManager.Elements[level.ElementsID[id]].Controller;
                     animator.SetFloat("Random",Random.Range(0f,1f));
                     elements[i, j] = new Element(level.ElementsID[id], Element.transform, sprRend);
                 }

@@ -11,16 +11,20 @@ namespace GameLogic
         private int i, j;
         private Vector2 beginDragPos;
         private Game game;
+        private BoxCollider2D swipeScreen;
 
         private void Start()
         {
-            BoxCollider2D swipeScreen = GetComponent<BoxCollider2D>();
+            swipeScreen = GetComponent<BoxCollider2D>();
+            game = LevelManager.instance.game;
+        }
+
+        public void UpdateSize()
+        {
             float scaleX = CS.ElementScale * CS.Width;
             float scaleY = CS.ElementScale * CS.Height;
             swipeScreen.size = new Vector2(scaleX, scaleY);
             swipeScreen.offset = new Vector2(0f, CS.StartSpawnPoint.y - CS.ElementScale*(CS.Height-1)/2f);
-
-            game = LevelManager.instance.game;
         }
 
         public void OnDrag(PointerEventData eventData)

@@ -6,11 +6,16 @@ namespace GameLogic
     {
         public static GameManager instance = null;
 
-        [SerializeField] private Camera mainCamera = default;
+        
         public Camera MainCamera => mainCamera;
-        [SerializeField] private ElementSample[] elements = new ElementSample[0];
         public ElementSample[] Elements => elements;
-        public SpriteRenderer Background;
+        public SpriteRenderer Background => background;
+        public ElementSwipe SwipeScreen => swipeScreen;
+
+        [SerializeField] private Camera mainCamera = default;
+        [SerializeField] private ElementSample[] elements = new ElementSample[0];
+        [SerializeField] private SpriteRenderer background = default;
+        [SerializeField] private ElementSwipe swipeScreen = default;
 
         private void Start()
         {

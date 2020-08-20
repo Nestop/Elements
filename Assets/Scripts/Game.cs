@@ -20,15 +20,31 @@ namespace GameLogic
         private bool isPlayerMove = false;
         private bool twoElements;
         private GameObject gameEffect;
+        private GameObject gameEffectSource;
         [SerializeField] private float speed = 10f;
         [SerializeField] private float destroyTime = 1.2f;
 
         public void GetElements(Element[,] elements)
         {
             LevelManager lvlManager = LevelManager.instance;
-            if (lvlManager.levels[lvlManager.loadedLevelNum].GameEffect != null)
+            if (elementsCopy != null)
             {
-                gameEffect = Instantiate(lvlManager.levels[lvlManager.loadedLevelNum].GameEffect, Vector3.zero, Quaternion.identity);
+                foreach (var element in elementsCopy)
+                {
+                    if (element != null)
+                        Destroy(element.transform.gameObject);
+                }
+            }
+            GameObject effect = lvlManager.levels[lvlManager.loadedLevelNum].GameEffect;
+            if (effect != null && (gameEffect == null || gameEffectSource.Equals(effect) == false))
+            {
+                
+                if(gameEffect != null)
+                {
+                    Destroy(gameEffect);
+                }
+                gameEffect = Instantiate(effect, Vector3.zero, Quaternion.identity);
+                gameEffectSource = effect;
             }
             
             this.elements = elements;
@@ -347,8 +363,12 @@ namespace GameLogic
             }
             if (win)
             {
-                blockControl = true;
-                GUIManager.instance.Win(true);
+                //blockControl = true;
+                //GUIManager.instance.Win(true);
+                LevelManager lvlManager = LevelManager.instance;
+                int levelNum = lvlManager.loadedLevelNum + 2;
+                levelNum = levelNum > lvlManager.levels.Count ? 1 : levelNum;
+                lvlManager.LoadLevel(levelNum);
             }
             else
             if (steps >= steps4win)
