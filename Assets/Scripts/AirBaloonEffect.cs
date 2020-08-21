@@ -80,7 +80,7 @@ namespace GameEffects
             {
                 Vector3 position = objPool[i].position;
                 position.x += objDirection[i]*objSpeed[i]*Time.deltaTime;
-                position.y += (0.0015f*Mathf.Sin(Time.time*0.4f+objSinusOffset[i]))*objSpeed[i];
+                position.y += (0.003f*Mathf.Sin(Time.time*0.4f+objSinusOffset[i]))*objSpeed[i];
                 objPool[i].position = position; 
                 if((objLaunched[i]) && (position.x<leftBorder || position.x>rightBorder))
                 {

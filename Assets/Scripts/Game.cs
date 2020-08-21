@@ -7,7 +7,6 @@ using CS = GameLogic.CoordinateSystem;
 
 namespace GameLogic
 {
-    [RequireComponent(typeof(LevelManager))]
     public class Game : MonoBehaviour
     {
         private Element[,] elements;
